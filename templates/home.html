@@ -1,0 +1,27 @@
+{% extends "layout.html" %} {% block body%}
+<div class="jumbotron text-center align-center">
+  <h1 class="display-4">Welcome to ArticlesApp</h1>
+  <p class="lead">
+    This is a simple article app, a simple jumbotron-style component for calling
+    extra attention to featured content or information.
+  </p>
+  <p class="lead">
+    <a class="btn btn-secondary btn-lg" href="/about" role="button"
+      >Learn more</a
+    >
+  </p>
+  <hr class="my-4" />
+  <p>
+    It uses utility classes for typography and spacing to space content out
+    within the larger container.
+  </p>
+  {% if session.logged_in == NULL %}
+  <a href="/register" class="btn btn-success btn-lg" role="button"
+    >Register&nbsp;Now! &raquo;</a
+  >
+  <a href="/login" class="btn btn-primary btn-lg" role="button"
+    >Login &raquo;</a
+  >
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block body %}
+<hr />
+<h1>Articles</h1>
+<hr />
+<br />
+<ul class="list-group">
+  {%for article in articles%}
+  <li class="list-group-item">
+    <img
+      src="{{url_for('static', filename='images/download.png' )}}"
+      class="image"
+      align="middle"
+      width="100,"
+      height="50"
+    />
+    <a href="article/{{article.id}}">{{article.title}}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
