@@ -5,6 +5,11 @@
   <hr />
   <small>By {{article.author}}, Published on {{article.create_date}}</small>
   <br />
+  <h1>Upload new File</h1>
+  <form method=post enctype=multipart/form-data>
+    <input type=file name=file>
+    <input type=submit value=Upload>
+  </form>
   {%if article.image %}
   <img src="{{'/static/' + article.image }}" alt="Image" /> {% endif %}
   <img

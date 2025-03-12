@@ -8,6 +8,10 @@ from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, BooleanField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 #create an instance of the flask class
 #its a place holder for the current module(app.y)
@@ -19,6 +23,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Tronstar123'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #initMysql
 #db = app.mysql.connect()
@@ -101,7 +106,7 @@ def register():
         cur.close()
         
         #Flash messages
-        flash('You are now registered and can log in', 'success')
+        flash("You are now registered and can log in", "success")
         
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
@@ -212,7 +217,7 @@ def add_article():
         #Close connection
         cur.close()
         
-        flash('Article Created', 'success')
+        flash("Article Created", "danger")
         
         return redirect(url_for('dashboard'))
     return render_template('add_article.html', form=form)
@@ -276,6 +281,31 @@ def delete_article(id):
     cur.close()
     
     return redirect(url_for('dashboard'))
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           
+@app.route('/', methods=['GET', 'POST'])
+@is_logged_in
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
+    return 
 
 #means that its the script to be executed
 if __name__ == '__main__':
